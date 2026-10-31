@@ -9,13 +9,15 @@ const db = new sqlite3.Database('./banco/ecommerce.db', (erro) => {
 });
 
 db.serialize(() => {
+
     db.run(`
         CREATE TABLE IF NOT EXISTS categorias (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL,
+            nome TEXT NOT NULL UNIQUE,
             descricao TEXT
         );
     `);
+
     db.run(`
         CREATE TABLE IF NOT EXISTS produtos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,6 +32,24 @@ db.serialize(() => {
         );
     `);
 
+    const listaCategorias = [
+        'Teclado',
+        'Mouse',
+        'Celular',
+        'Laptop',
+        'Controle',
+        'Carregador',
+        'Powerbank',
+        'Monitor',
+        'Roteador',
+        'Armazenamento'
+    ];
+
+    const stmt = db.prepare("INSERT OR IGNORE INTO categorias (nome, descricao) VALUES (?, ?)");
+    listaCategorias.forEach(cat => {
+        stmt.run(cat, `Produtos do tipo ${cat}`);
+    });
+    stmt.finalize();
 });
 
 module.exports = db;

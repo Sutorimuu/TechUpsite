@@ -4,7 +4,7 @@
 <main class="container py-4">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">
                     <i class="bi bi-box-seam"></i>
                     Produtos
@@ -32,32 +32,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% produtos.forEach(produto => { %>
+                        <% if (produtos && produtos.length > 0) { %>
+                            <% produtos.forEach(produto => { %>
+                                <tr>
+                                    <td><%= produto.id %></td>
+                                    <td><%= produto.nome %></td>
+                                    <td><%= produto.marca || '-' %></td>
+                                    <td><%= produto.categoria || '-' %></td>
+                                    <td><%= produto.tipo || '-' %></td>
+                                    <td>R$ <%= Number(produto.valor).toFixed(2).replace('.', ',') %></td>
+                                    <td><%= produto.estoque %></td>
+                                    <td>
+                                        <img src="/uploads/<%= produto.imagem %>" alt="<%= produto.nome %>" style="width: 45px; height: 45px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/45'">
+                                    </td>
+                                    <td>
+                                        <a href="/admin/produtos/editar/<%= produto.id %>" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <a href="/admin/produtos/excluir/<%= produto.id %>" class="btn btn-danger btn-sm" onclick="return confirm('Deseja realmente excluir este produto?')">
+                                            <i class="bi bi-trash"></i> Excluir
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil"></i>
-                                        Editar
-                                    </button>
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash"></i>
-                                        Excluir
-                                    </button>
-                                </td>
+                                <td colspan="9" class="text-center py-3 text-muted">Nenhum produto cadastrado no banco de dados.</td>
                             </tr>
-                        <% }) %>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
 </main>
 
 <%- include('../partials/footer') %>

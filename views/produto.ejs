@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechUp - <%= produto.nome %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Iceland&family=Kodchasan:wght@300;400;500;600;700&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="produtos-header">
+    <div class="header-inner">
+      <div class="logo">TechUp</div>
+      
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Pesquisar por celulares, perifericos, etc">
+      </div>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Produtos</a></li>
+          <li><a href="#categorias">Categorias</a></li>
+          <li><a href="#suporte">Suporte</a></li>
+          <li><a href="/admin" class="btn-login">Login</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="product-detail-container">
+    
+    <div class="breadcrumb">
+      <a href="/">Home</a> / 
+      <a href="/produtos"><%= produto.categoria || produto.tipo || 'Geral' %></a> / 
+      <%= produto.marca %> <%= produto.nome %>
+    </div>
+
+    <div class="product-main-grid">
+
+      <div class="product-gallery">
+        <div class="main-img-box">
+          <img src="/uploads/<%= produto.imagem %>" alt="<%= produto.nome %>" onerror="this.src='https://via.placeholder.com/450x350/ffffff/333333?text=TechUp'">
+        </div>
+        <div>
+          <div class="thumb-box">
+            <img src="/uploads/<%= produto.imagem %>" alt="<%= produto.nome %>" onerror="this.src='https://via.placeholder.com/80x80/ffffff/333333?text=TechUp'">
+          </div>
+        </div>
+      </div>
+
+      <div class="product-info-col">
+        <span class="product-category-tag"><%= produto.categoria || produto.tipo || 'Eletrônico' %></span>
+        <h1 class="product-title-main"><%= produto.nome %></h1>
+        <div class="product-subtitle-specs">
+          <%= produto.marca %> • <%= produto.tipo || produto.categoria || 'Alta Performance' %>
+        </div>
+
+        <div class="price-section-detail">
+          <div class="price-label-detail">Preço à vista</div>
+          <div class="price-value-detail">R$ <%= Number(produto.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></div>
+          <div class="installment-hint">12x S/Juros de R$ <%= (produto.valor / 10).toFixed(2).replace('.', ',') %> • Consulte as condições</div>
+        </div>
+
+        <div class="specs-grid-detail">
+          <% if (produto.tipo) { %>
+            <div class="spec-box-item">
+              <div class="spec-box-label">Tipo</div>
+              <div class="spec-box-val"><%= produto.tipo %></div>
+            </div>
+          <% } %>
+          <% if (produto.estoque) { %>
+            <div class="spec-box-item">
+              <div class="spec-box-label">Estoque</div>
+              <div class="spec-box-val"><%= produto.estoque %></div>
+            </div>
+          <% } %>
+        </div>
+
+        <div class="action-buttons">
+          <a href="#" class="btn-cart">Adicionar ao Carrinho</a>
+          <a href="#" class="btn-buy-now">Comprar Agora</a>
+        </div>
+
+        <div class="stock-status">
+          ✅ <%= produto.estoque ? produto.estoque : 'Em estoque' %> • consulte a entrega pelo CEP
+        </div>
+
+      </div>
+    </div>
+
+    <div class="description-section">
+      <h2 class="description-title">Descrição do Produto</h2>
+      <div class="description-text">
+        <p>
+          <%= produto.descricao || `${produto.marca} ${produto.nome} traz alto desempenho, excelente acabamento e confiabilidade, conforme a configuração apresentada no catálogo TechUp. Confira as informações do produto e a disponibilidade antes de adicionar ao carrinho.` %>
+        </p>
+        <p style="margin-top: 12px;">
+          O prazo e o valor da entrega são consultados pelo CEP durante a compra. O resumo do pedido permite conferir os itens e os valores antes da confirmação.
+        </p>
+      </div>
+    </div>
+
+    <% if (typeof relacionados !== 'undefined' && relacionados.length > 0) { %>
+      <section class="category-section" style="margin-top: 50px;">
+        <div class="related-header-flex">
+          <h2 class="related-title">Produtos Relacionados</h2>
+          <a href="/produtos" class="ver-todos-link">Ver todos</a>
+        </div>
+
+        <div class="products-grid">
+          <% relacionados.forEach(prod => { %>
+            <a href="/produto/<%= prod.id %>" class="product-card-link">
+              <div class="product-card">
+                <div class="card-img-wrapper">
+                  <span class="categoria-badge"><%= prod.tipo || prod.categoria || 'Geral' %></span>
+                  <img src="/uploads/<%= prod.imagem %>" alt="<%= prod.nome %>" onerror="this.src='https://via.placeholder.com/260x160/ffffff/333333?text=TechUp'">
+                </div>
+
+                <div class="card-body">
+                  <div class="brand-title">
+                    <span class="brand"><%= prod.marca %></span>
+                    <span class="model"><%= prod.nome %></span>
+                  </div>
+
+                  <div class="specs-tags">
+                    <% if (prod.tipo) { %><span class="tag"><%= prod.tipo %></span><% } %>
+                    <% if (prod.estoque) { %><span class="tag"><%= prod.estoque %></span><% } %>
+                  </div>
+
+                  <div class="price-info">
+                    <span class="installment">12x S/Juros: R$ <%= (prod.valor / 10).toFixed(2).replace('.', ',') %></span>
+                    <div class="cash-price">
+                      A vista: <span class="price-value">R$ <%= Number(prod.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+      </section>
+    <% } %>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-col" id="categorias">
+        <h3>Departamentos</h3>
+        <ul>
+          <li><a href="#">Teclados & Mouses</a></li>
+          <li><a href="#">Computadores</a></li>
+          <li><a href="#">Smartphones</a></li>
+          <li><a href="#">Laptops</a></li>
+          <li><a href="#">Controles</a></li>
+          <li><a href="#">Carregadores</a></li>
+          <li><a href="#">Powerbanks</a></li>
+          <li><a href="#">Monitor</a></li>
+          <li><a href="#">Internet & Wifi</a></li>
+          <li><a href="#">Armazenamento</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Institucional</h3>
+        <ul>
+          <li><a href="#">Quem Somos</a></li>
+          <li><a href="#">Localização</a></li>
+          <li><a href="#">Nossas Lojas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" id="suporte">
+        <h3>Ajuda</h3>
+        <ul>
+          <li><a href="#">Entrega</a></li>
+          <li><a href="#">Garantia</a></li>
+          <li><a href="#">Como Comprar</a></li>
+          <li><a href="#">Pagamentos</a></li>
+          <li><a href="#">SAC</a></li>
+          <li><a href="#">Fale Conosco</a></li>
+          <li><a href="#">Termos de Privacidade</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Social</h3>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">X</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Discord</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>2026 TechUp - Todos os direitos não reservados</p>
+    </div>
+  </footer>
+
+</body>
+</html>

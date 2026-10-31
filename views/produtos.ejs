@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechUp - Todos os Produtos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Iceland&family=Kodchasan:wght@300;400;500;600;700&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <% 
+    const lista = (typeof produtos !== 'undefined' && produtos.length > 0) ? produtos : mockProdutos;
+    const categoriasExistentes = [...new Set(lista.map(p => p.categoria || 'Geral'))];
+  %>
+
+  <header class="produtos-header">
+    <div class="header-inner">
+      <div class="logo">TechUp</div>
+      
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Pesquisar por celulares, perifericos, etc">
+      </div>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Produtos</a></li>
+          <li><a href="#categorias">Categorias</a></li>
+          <li><a href="#suporte">Suporte</a></li>
+          <li><a href="/admin" class="btn-login">Login</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="filter-section">
+    <div class="filter-controls">
+      <div class="select-wrapper">
+        <select id="categoriaFilter">
+          <option value="">Todas as categorias</option>
+          <% categoriasExistentes.forEach(cat => { %>
+            <option value="<%= cat %>"><%= cat %></option>
+          <% }); %>
+        </select>
+        <span class="select-arrow">&#9660;</span>
+      </div>
+
+      <div class="select-wrapper">
+        <select id="ordemFilter">
+          <option value="relevancia">Relevância</option>
+          <option value="nome">Nome (A–Z)</option>
+          <option value="menor-preco">Menor preço</option>
+          <option value="maior-preco">Maior preço</option>
+        </select>
+        <span class="select-arrow">&#9660;</span>
+      </div>
+    </div>
+
+    <div class="filter-info-box">
+      <div class="filter-tags-text">
+        Categorias: <strong class="tag-click" data-cat="">Todas</strong> • 
+        <% categoriasExistentes.forEach(cat => { %>
+          <span class="tag-click" data-cat="<%= cat %>"><%= cat %></span> • 
+        <% }); %>
+      </div>
+      <div class="filter-tags-text">
+        <strong>Ordenar por:</strong> Relevância • Nome (A–Z) • Menor preço • Maior preço
+      </div>
+      <div class="filter-subtext">Todos os produtos • use a busca ou selecione uma categoria</div>
+    </div>
+  </div>
+
+  <main class="main-container" id="produtos">
+    <section class="category-section">
+      <div class="products-grid" id="productsGrid">
+        <% lista.forEach(prod => { %>
+          <a href="/produto/<%= prod.id %>" class="product-card-link"
+             data-nome="<%= (prod.nome || '').toLowerCase() %>"
+             data-marca="<%= (prod.marca || '').toLowerCase() %>"
+             data-categoria="<%= prod.categoria || prod.tipo || 'Geral' %>"
+             data-valor="<%= Number(prod.valor || 0) %>">
+            <div class="product-card">
+              <div class="card-img-wrapper">
+                <span class="categoria-badge"><%= prod.tipo || prod.categoria || 'Geral' %></span>
+                <img src="/uploads/<%= prod.imagem %>" alt="<%= prod.nome %>" onerror="this.src='https://via.placeholder.com/260x160/ffffff/333333?text=TechUp'">
+              </div>
+
+              <div class="card-body">
+                <div class="brand-title">
+                  <span class="brand"><%= prod.marca %></span>
+                  <span class="model"><%= prod.nome %></span>
+                </div>
+
+                <div class="specs-tags">
+                  <% if (prod.tipo) { %><span class="tag"><%= prod.tipo %></span><% } %>
+                  <% if (prod.estoque) { %><span class="tag"><%= prod.estoque %></span><% } %>
+                </div>
+
+                <div class="price-info">
+                  <span class="installment">12x S/Juros: R$ <%= (prod.valor / 10).toFixed(2).replace('.', ',') %></span>
+                  <div class="cash-price">
+                    A vista: <span class="price-value">R$ <%= Number(prod.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-col" id="categorias">
+        <h3>Departamentos</h3>
+        <ul>
+          <li><a href="#">Teclados & Mouses</a></li>
+          <li><a href="#">Computadores</a></li>
+          <li><a href="#">Smartphones</a></li>
+          <li><a href="#">Laptops</a></li>
+          <li><a href="#">Controles</a></li>
+          <li><a href="#">Carregadores</a></li>
+          <li><a href="#">Powerbanks</a></li>
+          <li><a href="#">Monitor</a></li>
+          <li><a href="#">Internet & Wifi</a></li>
+          <li><a href="#">Armazenamento</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Institucional</h3>
+        <ul>
+          <li><a href="#">Quem Somos</a></li>
+          <li><a href="#">Localização</a></li>
+          <li><a href="#">Nossas Lojas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" id="suporte">
+        <h3>Ajuda</h3>
+        <ul>
+          <li><a href="#">Entrega</a></li>
+          <li><a href="#">Garantia</a></li>
+          <li><a href="#">Como Comprar</a></li>
+          <li><a href="#">Pagamentos</a></li>
+          <li><a href="#">SAC</a></li>
+          <li><a href="#">Fale Conosco</a></li>
+          <li><a href="#">Termos de Privacidade</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Social</h3>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">X</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Discord</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>2026 TechUp - Todos os direitos não reservados</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('searchInput');
+      const categoriaFilter = document.getElementById('categoriaFilter');
+      const ordemFilter = document.getElementById('ordemFilter');
+      const grid = document.getElementById('productsGrid');
+      const tagClicks = document.querySelectorAll('.tag-click');
+
+      function filtrarEOrdenarProdutos() {
+        const termoBusca = searchInput.value.toLowerCase().trim();
+        const categoriaSelecionada = categoriaFilter.value;
+        const ordem = ordemFilter.value;
+
+        const cardsLinks = Array.from(grid.querySelectorAll('.product-card-link'));
+
+        let produtosFiltrados = cardsLinks.filter(link => {
+          const nome = link.getAttribute('data-nome');
+          const marca = link.getAttribute('data-marca');
+          const categoria = link.getAttribute('data-categoria');
+
+          const matchBusca = nome.includes(termoBusca) || marca.includes(termoBusca);
+          const matchCategoria = !categoriaSelecionada || categoria === categoriaSelecionada;
+
+          return matchBusca && matchCategoria;
+        });
+
+        produtosFiltrados.sort((a, b) => {
+          const valA = parseFloat(a.getAttribute('data-valor'));
+          const valB = parseFloat(b.getAttribute('data-valor'));
+          const nomeA = a.getAttribute('data-nome');
+          const nomeB = b.getAttribute('data-nome');
+
+          if (ordem === 'menor-preco') return valA - valB;
+          if (ordem === 'maior-preco') return valB - valA;
+          if (ordem === 'nome') return nomeA.localeCompare(nomeB);
+          return 0; 
+        });
+
+        cardsLinks.forEach(link => link.style.display = 'none');
+        produtosFiltrados.forEach(link => {
+          link.style.display = 'block';
+          grid.appendChild(link); 
+        });
+      }
+
+      searchInput.addEventListener('input', filtrarEOrdenarProdutos);
+      categoriaFilter.addEventListener('change', filtrarEOrdenarProdutos);
+      ordemFilter.addEventListener('change', filtrarEOrdenarProdutos);
+
+      tagClicks.forEach(tag => {
+        tag.addEventListener('click', () => {
+          const cat = tag.getAttribute('data-cat');
+          categoriaFilter.value = cat;
+          filtrarEOrdenarProdutos();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
