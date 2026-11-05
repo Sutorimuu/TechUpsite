@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechUp - Seu Carrinho</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Iceland&family=Kodchasan:wght@300;400;500;600;700&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="produtos-header">
+    <div class="header-inner">
+      <div class="logo">TechUp</div>
+      
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Pesquisar por celulares, perifericos, etc">
+      </div>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Produtos</a></li>
+          <li><a href="#categorias">Categorias</a></li>
+          <li><a href="#suporte">Suporte</a></li>
+          <li><a href="/carrinho" class="cart-link">🛒</a></li>
+          <li><a href="/admin" class="btn-login">Login</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="product-detail-container">
+
+    <div class="breadcrumb" style="margin-bottom: 20px;">
+      <a href="/">Home</a> / Seu Carrinho
+    </div>
+
+    <div class="cart-page-header">
+      <h1 class="cart-main-title">Seu Carrinho</h1>
+    </div>
+
+    <% if (typeof itens === 'undefined' || itens.length === 0) { %>
+      <div class="empty-cart-container" style="text-align: center; padding: 50px 0; color: #fff;">
+        <p style="font-size: 1.2rem; margin-bottom: 20px;">O seu carrinho está vazio.</p>
+        <a href="/" class="btn-buy-now" style="display: inline-block; padding: 12px 24px; text-decoration: none;">Escolher Produtos</a>
+      </div>
+    <% } else { %>
+
+      <div class="cart-layout-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; align-items: start;">
+        
+        <!-- Lista de Produtos no Carrinho -->
+        <div class="cart-items-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <% itens.forEach(item => { %>
+            <div class="product-card" style="position: relative; display: flex; flex-direction: column; justify-content: space-between;">
+              
+              <!-- Botão Remover Item -->
+              <form action="/carrinho/remover/<%= item.produto.id %>" method="POST" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
+                <button type="submit" style="background: rgba(0,0,0,0.6); border: none; border-radius: 4px; padding: 6px 8px; cursor: pointer; color: #fff;" title="Remover item">
+                  🗑️
+                </button>
+              </form>
+
+              <div class="card-img-wrapper">
+                <span class="categoria-badge"><%= item.produto.tipo || item.produto.categoria || 'Geral' %></span>
+                <img src="/uploads/<%= item.produto.imagem %>" alt="<%= item.produto.nome %>" onerror="this.src='https://via.placeholder.com/260x160/ffffff/333333?text=TechUp'">
+              </div>
+
+              <div class="card-body">
+                <div class="brand-title">
+                  <span class="brand" style="background: #004D40; padding: 2px 8px; border-radius: 4px; color: #fff; font-size: 0.85rem;"><%= item.produto.marca %></span>
+                </div>
+                <div class="model" style="font-size: 1.1rem; margin: 8px 0; color: #fff; font-weight: bold;"><%= item.produto.nome %></div>
+                
+                <div class="price-info" style="margin-bottom: 15px;">
+                  <span class="price-value" style="color: #fff; font-size: 1rem;">R$ <%= Number(item.produto.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %> / un.</span>
+                </div>
+
+                <!-- Controles de Quantidade -->
+                <div style="display: flex; align-items: center; gap: 10px; background: #00332c; padding: 6px 12px; border-radius: 6px; width: fit-content;">
+                  <form action="/carrinho/diminuir/<%= item.produto.id %>" method="POST" style="display:inline;">
+                    <button type="submit" style="background: none; border: none; color: #fff; font-weight: bold; cursor: pointer; font-size: 1rem;">−</button>
+                  </form>
+                  <span style="color: #fff; font-weight: bold; min-width: 15px; text-align: center;"><%= item.quantidade %></span>
+                  <form action="/carrinho/adicionar/<%= item.produto.id %>" method="POST" style="display:inline;">
+                    <button type="submit" style="background: none; border: none; color: #fff; font-weight: bold; cursor: pointer; font-size: 1rem;">+</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <!-- Resumo do Pedido (Lateral Direita) -->
+        <div class="cart-summary-box" style="background: rgba(0, 77, 64, 0.4); border: 1px solid #00796B; border-radius: 12px; padding: 25px; color: #fff;">
+          <div style="font-size: 0.85rem; color: #A7FFEB; text-transform: uppercase; letter-spacing: 1px;">Resumo do pedido</div>
+          <h2 style="font-size: 1.6rem; margin: 5px 0 15px 0;">Seu Total</h2>
+          <div style="font-size: 1.8rem; font-weight: bold; color: #64FFDA; margin-bottom: 25px;">
+            R$ <%= Number(total).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+            <div style="font-size: 0.85rem; color: #ccc; margin-bottom: 6px;">Frete</div>
+            <div style="font-size: 0.9rem; color: #aaa; margin-bottom: 10px;">Calcule o frete para o CEP 00000-000</div>
+            <button type="button" style="width: 100%; background: #00796B; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">Calcular frete</button>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+            <div style="font-size: 0.85rem; color: #ccc; margin-bottom: 8px;">Cupom de desconto</div>
+            <button type="button" style="width: 100%; background: #00796B; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">Aplicar cupom</button>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem;">
+            <span>Subtotal (<%= totalItens %> itens)</span>
+            <span>R$ <%= Number(total).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem;">
+            <span>Frete estimado</span>
+            <span>—</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.95rem;">
+            <span>Desconto</span>
+            <span>R$ 0,00</span>
+          </div>
+
+          <a href="#" class="btn-buy-now" style="display: block; text-align: center; text-decoration: none; padding: 14px; background: #00BFA5; color: #000; font-weight: bold; border-radius: 8px; margin-bottom: 10px;">Ir para o Pagamento</a>
+          <div style="font-size: 0.75rem; text-align: center; color: #b2dfdb;">Ao continuar, você será direcionado para o checkout para concluir o pagamento.</div>
+        </div>
+
+      </div>
+
+      <!-- Botões Inferiores (Limpar e Continuar Comprando) -->
+      <div style="display: flex; gap: 15px; margin-top: 30px;">
+        <form action="/carrinho/limpar" method="POST">
+          <button type="submit" style="background: #004D40; color: #fff; border: 1px solid #00796B; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">Limpar Carrinho</button>
+        </form>
+        <a href="/" style="background: #00796B; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-flex; align-items: center;">Continuar Comprando</a>
+      </div>
+
+    <% } %>
+
+  </main>
+
+  <footer class="site-footer" style="margin-top: 60px;">
+    <div class="footer-top">
+      <div class="footer-col" id="categorias">
+        <h3>Departamentos</h3>
+        <ul>
+          <% if (typeof categorias !== 'undefined' && categorias.length > 0) { %>
+            <% categorias.forEach(cat => { %>
+              <li><a href="#"><%= cat.nome %></a></li>
+            <% }) %>
+          <% } else { %>
+            <li><a href="#">Teclados & Mouses</a></li>
+            <li><a href="#">Computadores</a></li>
+            <li><a href="#">Smartphones</a></li>
+          <% } %>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Institucional</h3>
+        <ul>
+          <li><a href="#">Quem Somos</a></li>
+          <li><a href="#">Localização</a></li>
+          <li><a href="#">Nossas Lojas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" id="suporte">
+        <h3>Ajuda</h3>
+        <ul>
+          <li><a href="#">Entrega</a></li>
+          <li><a href="#">Garantia</a></li>
+          <li><a href="#">Como Comprar</a></li>
+          <li><a href="#">Pagamentos</a></li>
+          <li><a href="#">SAC</a></li>
+          <li><a href="#">Fale Conosco</a></li>
+          <li><a href="#">Termos de Privacidade</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Social</h3>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">X</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Discord</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>2026 TechUp - Todos os direitos não reservados</p>
+    </div>
+  </footer>
+
+</body>
+</html>
