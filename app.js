@@ -70,6 +70,58 @@ app.get('/produto/:id', (req, res) => {
   });
 });
 
+// ==========================================
+// ROTAS DE AUTENTICAÇÃO (Login / Registro / Senha)
+// ==========================================
+
+// Tela inicial de escolha (Login / Registrar)
+app.get('/auth', (req, res) => {
+  res.render('logininicio');
+});
+
+// Tela do formulário de Login
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+// Ação de Login (POST)
+app.post('/login', (req, res) => {
+  const { usuario, senha } = req.body;
+  // Lógica de verificação no banco de dados pode ser inserida aqui
+  res.redirect('/');
+});
+
+// Tela de Recuperação de Senha - Etapa 1 (E-mail e Data de Nascimento)
+app.get('/esqueci-senha', (req, res) => {
+  res.render('esqueciasenha');
+});
+
+// Tela de Criação/Alteração de Nova Senha
+app.get('/nova-senha', (req, res) => {
+  res.render('novasenha');
+});
+
+app.post('/atualizar-senha', (req, res) => {
+  const { senha, confirma_senha } = req.body;
+  // Lógica de atualização de senha no banco
+  res.redirect('/login');
+});
+
+// Tela de Registro - Etapa 1 (Dados Pessoais)
+app.get('/registro-etapa1', (req, res) => {
+  res.render('registro1');
+});
+
+// Tela de Registro - Etapa 2 (Criação de Senha)
+app.get('/registro-etapa2', (req, res) => {
+  res.render('registro2');
+});
+
+app.post('/cadastrar', (req, res) => {
+  // Lógica de cadastro no banco
+  res.redirect('/login');
+});
+
 // Rotas do Admin
 const appAdmin = require('./rotas/admin');
 app.use('/admin', appAdmin);

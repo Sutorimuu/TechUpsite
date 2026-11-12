@@ -13,9 +13,7 @@
 
   <% 
     const lista = (typeof produtos !== 'undefined' && produtos.length > 0) ? produtos : mockProdutos;
-    
     const ofertas = lista.slice(0, 3);
-
     const categoriasExistentes = [...new Set(lista.map(p => p.categoria || 'Geral'))];
     const categoriasEmbaralhadas = categoriasExistentes.sort(() => 0.5 - Math.random());
     const secoesSorteadas = categoriasEmbaralhadas.slice(0, 2);
@@ -34,17 +32,17 @@
       <nav class="navbar">
         <div class="logo">TechUp</div>
         <ul class="nav-links">
-          <li><a href="produtos">Produtos</a></li>
-          <li><a href="#categorias">Categorias</a></li>
-          <li><a href="#suporte">Suporte</a></li>
-          <li><a href="/admin" class="btn-login">Login</a></li>
+          <li><a href="/auth">Produtos</a></li>
+          <li><a href="/auth">Categorias</a></li>
+          <li><a href="/auth">Suporte</a></li>
+          <li><a href="/auth" class="btn-login">Login</a></li>
         </ul>
       </nav>
 
       <div class="banner-text">
         <h1>Seus eletrônicos<br>em Alta!</h1>
         <div class="search-box">
-          <input type="text" placeholder="Pesquisar por celulares, perifericos, etc">
+          <input type="text" placeholder="Pesquisar por celulares, perifericos, etc" onclick="window.location.href='/auth'" style="cursor: pointer;" readonly>
         </div>
       </div>
 
@@ -70,7 +68,7 @@
 
       <div class="products-grid">
         <% ofertas.forEach(prod => { %>
-          <a href="/produto/<%= prod.id %>" class="product-card-link">
+          <a href="/auth" class="product-card-link">
             <div class="product-card">
               <div class="card-img-wrapper">
                 <span class="categoria-badge"><%= prod.tipo || prod.categoria || 'Oferta' %></span>
@@ -113,7 +111,7 @@
             const prodsDaSecao = lista.filter(p => (p.categoria || 'Geral') === secaoNome).slice(0, 3);
             prodsDaSecao.forEach(prod => { 
           %>
-            <a href="/produto/<%= prod.id %>" class="product-card-link">
+            <a href="/auth" class="product-card-link">
               <div class="product-card">
                 <div class="card-img-wrapper">
                   <span class="categoria-badge"><%= prod.categoria || secaoNome %></span>
@@ -146,7 +144,7 @@
     <% }); %>
 
     <div class="see-more-container">
-      <button class="btn-see-more">Ver mais produtos</button>
+      <a href="/auth" class="btn-see-more" style="text-decoration: none; display: inline-block; text-align: center;">Ver mais produtos</a>
     </div>
   </main>
 
@@ -228,11 +226,12 @@
       goToSlide((currentIdx - 1 + slides.length) % slides.length);
     }
 
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
-    dots.forEach((dot, index) => dot.addEventListener('click', () => goToSlide(index)));
-
-    setInterval(nextSlide, 4000);
+    if(nextBtn && prevBtn) {
+      nextBtn.addEventListener('click', nextSlide);
+      prevBtn.addEventListener('click', prevSlide);
+      dots.forEach((dot, index) => dot.addEventListener('click', () => goToSlide(index)));
+      setInterval(nextSlide, 4000);
+    }
   </script>
 </body>
 </html>
